@@ -2,24 +2,27 @@ from allennlp.predictors import Predictor
 from allennlp.models.archival import load_archive
 from allennlp.common.util import import_submodules, JsonDict, sanitize
 import argparse
+
 import_submodules('imojie')
 
+
 def process(token_ids):
-    temp=" ".join(token_ids)
-    temp = temp.replace(" ##","")
-    temp = temp.replace("[unused1]","( ")
-    temp = temp.replace("[unused2]"," ; ")
-    temp = temp.replace("[unused3]","")
-    temp = temp.replace("[unused4]"," ; ")
-    temp = temp.replace("[unused5]","")
-    temp = temp.replace("[unused6]"," )")
+    temp = " ".join(token_ids)
+    temp = temp.replace(" ##", "")
+    temp = temp.replace("[unused1]", "( ")
+    temp = temp.replace("[unused2]", " ; ")
+    temp = temp.replace("[unused3]", "")
+    temp = temp.replace("[unused4]", " ; ")
+    temp = temp.replace("[unused5]", "")
+    temp = temp.replace("[unused6]", " )")
     temp = temp.strip()
     temp = temp.split("[SEP]")
-    ans=[]
+    ans = []
     for x in temp:
-        if x!="":
+        if x != "":
             ans.append(x)
     return ans
+
 
 def main(args):
     archive = load_archive(
@@ -40,12 +43,13 @@ def main(args):
         output = sanitize(output)
         output = process(output["predicted_tokens"][0])
         out.write(line)
-        out.write('\n'.join(output)+'\n\n')
+        out.write('\n'.join(output) + '\n\n')
     out.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--inp')
-    parser.add_argument('--out')
+    parser.add_argument('--inp', default="data/ours/D3_test_description.txt")
+    parser.add_argument('--out', default="data/ours/D3_test_description_noie.txt")
     args = parser.parse_args()
     main(args)
